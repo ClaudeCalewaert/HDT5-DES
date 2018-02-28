@@ -19,7 +19,12 @@ def generador_de_procesos(env, cantidad, intervalo_de_procesos, simulador_de_pro
 def proceso(nombre, env, simulador_de_procesos, cantidad_de_memoria, cantidad_de_instrucciones):
     print('El %s se encuentra en espera en %d' % (nombre, env.now))
 
-    yield env.timeout(10) #prueba de yield
+   # print('memoria ram %d memoria %d' % (simulador_de_procesos.memoria_ram.level,cantidad_de_memoria)) #prueba de memoria
+
+    if simulador_de_procesos.memoria_ram.level >= cantidad_de_memoria:
+        simulador_de_procesos.memoria_ram.get(cantidad_de_memoria)
+        yield env.timeout(10) #prueba de yield
+
 
 env = simpy.Environment()
 simulador_de_procesos = SimuladorProcesos(env)
