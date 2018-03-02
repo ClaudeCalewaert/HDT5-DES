@@ -19,7 +19,7 @@ def generador_de_procesos(env, cantidad, intervalo_de_procesos, simulador_de_pro
 def proceso(nombre, env, simulador_de_procesos, cantidad_de_memoria, cantidad_de_instrucciones):
     print('El %s se encuentra en new en %d' % (nombre, env.now))
 
-    print('memoria ram %d memoria %d' % (simulador_de_procesos.memoria_ram.level,cantidad_de_memoria)) #prueba de memoria
+    print('memoria ram disponible %d memoria solicitada por el %s: %d' % (simulador_de_procesos.memoria_ram.level, nombre, cantidad_de_memoria))
 
     memoria_disponible = False
 
@@ -33,14 +33,18 @@ def proceso(nombre, env, simulador_de_procesos, cantidad_de_memoria, cantidad_de
     print('El %s esta en Ready en %d' % (nombre, env.now))
     yield simulador_de_procesos.memoria_ram.get(cantidad_de_memoria)
 
-    with simulador_de_procesos.cpu.request() as req:
-        
+    print('El proceso %s tiene %d intrucciones' % (nombre, cantidad_de_instrucciones))
 
+    with simulador_de_procesos.cpu.request() as req:
+            yield req
+            cantidad_de_instrucciones = cantidad_de_instrucciones-1
+            print('Cantidad de instrucciones restantes %d' % cantidad_de_instrucciones)
+            env.timeout(10)
 
 env = simpy.Environment()
 simulador_de_procesos = SimuladorProcesos(env)
 semilla_random = 45
-cantidad_de_procesos = 25
+cantidad_de_procesos = 2
 intervalo_de_procesos = 10
 env.process(generador_de_procesos(env, cantidad_de_procesos, intervalo_de_procesos, simulador_de_procesos))
 env.run()
