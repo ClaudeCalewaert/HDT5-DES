@@ -1,7 +1,6 @@
 import simpy
 import random
 
-
 class SimuladorProcesos:
     def __init__(self, env):
         self.cpu = simpy.Resource(env, capacity=1)
@@ -41,6 +40,17 @@ def proceso(nombre, env, simulador_de_procesos, cantidad_de_memoria, cantidad_de
             print('Cantidad de instrucciones restantes %d' % cantidad_de_instrucciones)
             env.timeout(10)
 
+
+def setup(env, cantidad_de_procesos, nombre,  intervalo_de_procesos):
+    if memoria_disponible == true:
+        child = env.process(sub(env))
+        yield env.timeout(0.5)
+        print ('intervalo: %d' (intervalo_de_procesos))
+        print ('Proceso completado: %d'(nombre))
+        yield chield
+
+
+        
 env = simpy.Environment()
 simulador_de_procesos = SimuladorProcesos(env)
 semilla_random = 45
