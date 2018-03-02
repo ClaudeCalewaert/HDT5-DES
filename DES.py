@@ -2,8 +2,6 @@ import simpy
 import random
 
 
-
-
 class SimuladorProcesos:
     def __init__(self, env):
         self.cpu = simpy.Resource(env, capacity=1)
@@ -19,19 +17,27 @@ def generador_de_procesos(env, cantidad, intervalo_de_procesos, simulador_de_pro
 
 
 def proceso(nombre, env, simulador_de_procesos, cantidad_de_memoria, cantidad_de_instrucciones):
-    print('El %s se encuentra en espera en %d' % (nombre, env.now))
-    print('Cantindad de instrucciones: %d' %(cantidad_de_instrucciones))
-    print('Cantidad de memoria: %d' % (cantidad_de_memoria))
+    print('El %s se encuentra en new en %d' % (nombre, env.now))
 
-   # print('memoria ram %d memoria %d' % (simulador_de_procesos.memoria_ram.level,cantidad_de_memoria)) #prueba de memoria
+    print('memoria ram %d memoria %d' % (simulador_de_procesos.memoria_ram.level,cantidad_de_memoria)) #prueba de memoria
 
-    if simulador_de_procesos.memoria_ram.level >= cantidad_de_memoria:
-        simulador_de_procesos.memoria_ram.get(cantidad_de_memoria)
-        yield env.timeout(10) #prueba de yield
+    memoria_disponible = False
+
+    while memoria_disponible == False:
+        if simulador_de_procesos.memoria_ram.level >= cantidad_de_memoria:
+            memoria_disponible = True
+
+        else:
+            memoria_disponible = False
+
+    print('El %s esta en Ready en %d' % (nombre, env.now))
+    yield simulador_de_procesos.memoria_ram.get(cantidad_de_memoria)
+
+    with simulador_de_procesos.cpu.request() as req:
+        
 
 
 env = simpy.Environment()
-bcs = simpy.Resource(env, capacity)
 simulador_de_procesos = SimuladorProcesos(env)
 semilla_random = 45
 cantidad_de_procesos = 25
